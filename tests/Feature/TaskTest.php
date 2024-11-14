@@ -76,7 +76,6 @@ class TaskTest extends TestCase
         $response->assertStatus(200)
                  ->assertJsonFragment($data);
     }
-
     /**
      * Prueba para eliminar una tarea.
      */
