@@ -60,7 +60,6 @@ class TaskTest extends TestCase
                      'name' => $task->name,
                  ]);
     }
-
     /**
      * Prueba para actualizar una tarea.
      */
