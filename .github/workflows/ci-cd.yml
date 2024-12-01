@@ -62,13 +62,18 @@ jobs:
       - name: Run seeders
         run: |
           docker compose exec web php artisan db:seed --force
-
+      
       # Paso 10: Ejecutar pruebas de integración
-      - name: Run integration tests
+      - name: Run unit tests
+        run: |
+          docker compose exec web php artisan test --testsuite=Unit
+
+      # Paso 11: Ejecutar pruebas de integración
+      - name: Run system tests
         run: |
           docker compose exec web php artisan test --testsuite=Feature
 
-      # Paso 11: Simular despliegue (si todas las pruebas pasan)
+      # Paso 12: Simular despliegue (si todas las pruebas pasan)
       - name: Simulate Deployment
         if: ${{ success() }}
         run: |
