@@ -2,25 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
+use App\Interfaces\TaskRepositoryInterface;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
+    protected $taskRepository;
+
+    public function __construct(TaskRepositoryInterface $taskRepository)
+    {
+        $this->taskRepository = $taskRepository;
+    }
+
     public function index()
     {
-        return response()->json(Task::all(), 200);
+        return response()->json($this->taskRepository->getAll(), 200);
     }
 
     public function store(Request $request)
     {
-        $task = Task::create($request->all());
+        $task = $this->taskRepository->create($request->all());
         return response()->json($task, 200);
     }
 
     public function show($id)
     {
-        $task = Task::find($id);
+        $task = $this->taskRepository->find($id);
         if ($task) {
             return response()->json($task, 200);
         }
@@ -29,9 +36,8 @@ class TaskController extends Controller
 
     public function update(Request $request, $id)
     {
-        $task = Task::find($id);
+        $task = $this->taskRepository->update($id, $request->all());
         if ($task) {
-            $task->update($request->all());
             return response()->json($task, 200);
         }
         return response()->json(['message' => 'Task not found'], 404);
@@ -39,12 +45,9 @@ class TaskController extends Controller
 
     public function destroy($id)
     {
-        $task = Task::find($id);
-        if ($task) {
-            $task->delete();
+        if ($this->taskRepository->delete($id)) {
             return response()->json(['message' => 'Task deleted'], 200);
         }
         return response()->json(['message' => 'Task not found'], 404);
     }
 }
-

@@ -12,26 +12,12 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
 
-    services:
-      db:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: root 
-          MYSQL_DATABASE: docker_app
-          MYSQL_USER: gallego
-          MYSQL_PASSWORD: admin123
-        ports:
-          - 3308:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost" 
-          --health-interval=10s 
-          --health-timeout=5s 
-          --health-retries=5
-
     steps:
+      # Paso 1: Checkout del repositorio
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Paso 2: Configurar PHP
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -39,9 +25,11 @@ jobs:
           extensions: mbstring, pdo, ctype, json, tokenizer, xml
           ini-values: post_max_size=256M, max_execution_time=300
 
+      # Paso 3: Instalar dependencias con Composer
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
+      # Paso 4: Configurar archivo .env
       - name: Create .env file
         run: |
           cp .env.example .env
@@ -51,29 +39,36 @@ jobs:
           echo "DB_USERNAME=gallego" >> .env
           echo "DB_PASSWORD=admin123" >> .env
 
+      # Paso 5: Generar clave de aplicación
       - name: Generate application key
         run: php artisan key:generate
 
+      # Paso 6: Configurar Docker Compose
       - name: Set up Docker Compose
         run: |
           docker compose up -d --build
 
+      # Paso 7: Esperar que los servicios estén listos
       - name: Wait for services to start
         run: |
           sleep 30
 
+      # Paso 8: Ejecutar migraciones
       - name: Run migrations
         run: |
           docker compose exec web php artisan migrate --force
 
+      # Paso 9: Ejecutar seeders
       - name: Run seeders
         run: |
           docker compose exec web php artisan db:seed --force
 
+      # Paso 10: Ejecutar pruebas de integración
       - name: Run integration tests
         run: |
           docker compose exec web php artisan test --testsuite=Feature
 
+      # Paso 11: Simular despliegue (si todas las pruebas pasan)
       - name: Simulate Deployment
         if: ${{ success() }}
         run: |
