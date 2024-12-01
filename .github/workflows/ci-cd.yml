@@ -19,6 +19,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: root 
           MYSQL_DATABASE: docker_app
           MYSQL_USER: gallego
+          MYSQL_PASSWORD: admin123
         ports:
           - 3308:3306
         options: >-
@@ -48,6 +49,7 @@ jobs:
           echo "DB_HOST=db" >> .env
           echo "DB_DATABASE=docker_app" >> .env
           echo "DB_USERNAME=gallego" >> .env
+          echo "DB_PASSWORD=admin123" >> .env
 
       - name: Generate application key
         run: php artisan key:generate
