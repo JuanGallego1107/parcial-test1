@@ -21,11 +21,11 @@ jobs:
           MYSQL_USER: gallego
         ports:
           - 3308:3306
-        healthcheck:  # Cambié 'options' a 'healthcheck'
-          test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-          interval: 10s
-          timeout: 5s
-          retries: 5
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
 
     steps:
       - name: Checkout repository
