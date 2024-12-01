@@ -32,6 +32,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set up environment file
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_DATABASE=docker_app" >> .env
+          echo "DB_USERNAME=gallego" >> .env
+
       - name: Set up Docker Compose
         run: |
           docker compose up -d --build
