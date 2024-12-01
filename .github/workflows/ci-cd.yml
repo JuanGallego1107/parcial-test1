@@ -18,7 +18,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root 
           MYSQL_DATABASE: docker_app
-          MYSQL_USER: root
+          MYSQL_USER: gallego
           MYSQL_PASSWORD: 
         ports:
           - 3307:3306
