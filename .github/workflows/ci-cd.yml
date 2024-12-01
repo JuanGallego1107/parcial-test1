@@ -34,7 +34,7 @@ jobs:
 
       - name: Set up Docker Compose
         run: |
-          docker-compose up -d --build
+          docker compose up -d --build
 
       - name: Wait for services to start
         run: |
@@ -42,15 +42,15 @@ jobs:
 
       - name: Run migrations
         run: |
-          docker-compose exec web php artisan migrate --force
+          docker compose exec web php artisan migrate --force
 
       - name: Run seeders
         run: |
-          docker-compose exec web php artisan db:seed --force
+          docker compose exec web php artisan db:seed --force
 
       - name: Run integration tests
         run: |
-          docker-compose exec web php artisan test --testsuite=Feature
+          docker compose exec web php artisan test --testsuite=Feature
 
       - name: Simulate Deployment
         if: ${{ success() }}
