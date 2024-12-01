@@ -46,9 +46,9 @@ jobs:
         run: |
           cp .env.example .env
           echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=host.docker.internal" >> .env
           echo "DB_DATABASE=docker_app" >> .env
           echo "DB_USERNAME=gallego" >> .env
-          echo "DB_PASSWORD=your_password" >> .env # Asegúrate de definir la contraseña
 
       - name: Generate application key
         run: php artisan key:generate
