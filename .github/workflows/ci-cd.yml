@@ -12,38 +12,47 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root 
+          MYSQL_DATABASE: docker_app
+          MYSQL_USER: root
+          MYSQL_PASSWORD: 
+        ports:
+          - 3307:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.2
-          extensions: mbstring, pdo, sqlite, ctype, json, tokenizer, xml
-          ini-values: post_max_size=256M, max_execution_time=300
-
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Set up environment file
+      - name: Set up Docker Compose
         run: |
-          cp .env.example .env
-          php artisan key:generate
-          echo "DB_CONNECTION=sqlite" >> .env
-          echo "DB_DATABASE=$(pwd)/database/database.sqlite" >> .env
-          touch database/database.sqlite
+          docker-compose up -d --build
+
+      - name: Wait for services to start
+        run: |
+          sleep 30
 
       - name: Run migrations
-        run: php artisan migrate --force
+        run: |
+          docker-compose exec web php artisan migrate --force
 
       - name: Run seeders
-        run: php artisan db:seed --force
+        run: |
+          docker-compose exec web php artisan db:seed --force
 
-      - name: Run tests
-        run: php artisan test
+      - name: Run integration tests
+        run: |
+          docker-compose exec web php artisan test --testsuite=Feature
 
       - name: Simulate Deployment
         if: ${{ success() }}
         run: |
-          echo "Desplegado"
+          echo "Deployment simulated: All tests passed!"

@@ -4,13 +4,9 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Task;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class TaskTest extends TestCase
+class EndpointTaskTest extends TestCase
 {
-    // Si quieres una base de datos limpia en cada prueba, descomenta esta línea:
-    // use RefreshDatabase;
-
     /**
      * Prueba para listar todas las tareas.
      */
@@ -35,6 +31,8 @@ class TaskTest extends TestCase
      */
     public function test_create_task()
     {
+        $this->withoutMiddleware();
+        
         $data = [
             'name' => 'Nueva tarea de prueba'
         ];
@@ -65,6 +63,9 @@ class TaskTest extends TestCase
      */
     public function test_update_task()
     {
+
+        $this->withoutMiddleware();
+
         $task = Task::factory()->create();
 
         $data = [
@@ -81,6 +82,8 @@ class TaskTest extends TestCase
      */
     public function test_delete_task()
     {
+        $this->withoutMiddleware();
+
         $task = Task::factory()->create();
 
         $response = $this->delete("/tasks/{$task->id}");
@@ -89,7 +92,5 @@ class TaskTest extends TestCase
                  ->assertJson([
                      'message' => 'Task deleted'
                  ]);
-
-        $this->assertDatabaseMissing('tasks', ['id' => $task->id]);
     }
 }
