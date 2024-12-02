@@ -57,7 +57,8 @@ jobs:
       # Paso 7: Esperar que los servicios estén listos
       - name: Wait for services to start
         run: |
-          sleep 30
+          docker compose exec db mysqladmin ping -h localhost --silent
+          docker compose exec redis redis-cli ping
 
       # Paso 8: Ejecutar migraciones
       - name: Run migrations

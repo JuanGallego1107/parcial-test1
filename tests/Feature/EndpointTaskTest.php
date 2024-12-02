@@ -104,14 +104,14 @@ class EndpointTaskTest extends TestCase
     public function test_check_task_exists_in_redis()
     {
         $this->withoutMiddleware();
-        
+
         // Create a task in the database
         $task = Task::factory()->create();
 
         // Store the task in Redis
         $redisKey = "task:{$task->id}";
         Redis::set($redisKey, json_encode($task->toArray()));
-        Redis::expire($redisKey, 3600); // Optional: Set expiration
+        Redis::expire($redisKey, 3600);
 
         // Call the endpoint
         $response = $this->get("/tasks/{$task->id}/exists-in-redis");
