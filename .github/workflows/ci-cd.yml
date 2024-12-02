@@ -54,33 +54,27 @@ jobs:
         run: |
           docker compose up -d --build
 
-      # Paso 7: Esperar que los servicios estén listos
-      - name: Wait for services to start 
-        run: |
-          docker compose exec db mysqladmin ping -h db --silent
-          docker compose exec redis redis-cli ping
-
-      # Paso 8: Ejecutar migraciones
+      # Paso 7: Ejecutar migraciones
       - name: Run migrations
         run: |
           docker compose exec web php artisan migrate --force
 
-      # Paso 9: Ejecutar seeders
+      # Paso 8: Ejecutar seeders
       - name: Run seeders
         run: |
           docker compose exec web php artisan db:seed --force
       
-      # Paso 10: Ejecutar pruebas de integración
+      # Paso 9: Ejecutar pruebas de integración
       - name: Run unit tests
         run: |
           docker compose exec web php artisan test --testsuite=Unit
 
-      # Paso 11: Ejecutar pruebas de integración
+      # Paso 10: Ejecutar pruebas de integración
       - name: Run system tests
         run: |
           docker compose exec web php artisan test --testsuite=Feature
 
-      # Paso 12: Simular despliegue
+      # Paso 11: Simular despliegue
       - name: Simulate Deployment
         if: ${{ success() }}
         run: |
