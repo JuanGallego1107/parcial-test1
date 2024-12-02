@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\TaskRepositoryInterface;
 use App\Models\Task;
+use Illuminate\Support\Facades\Redis;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -40,5 +41,14 @@ class TaskRepository implements TaskRepositoryInterface
             return true;
         }
         return false;
+    }
+
+    public function taskExistsInRedis(int $taskId): bool
+    {
+        // Define a unique Redis key for the task
+        $redisKey = "task:{$taskId}";
+
+        // Check if the key exists in Redis
+        return Redis::exists($redisKey) > 0;
     }
 }

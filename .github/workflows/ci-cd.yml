@@ -35,9 +35,15 @@ jobs:
           cp .env.example .env
           echo "DB_CONNECTION=mysql" >> .env
           echo "DB_HOST=db" >> .env
+          echo "DB_PORT=3306" >> .env
           echo "DB_DATABASE=docker_app" >> .env
           echo "DB_USERNAME=gallego" >> .env
           echo "DB_PASSWORD=admin123" >> .env
+          echo "CACHE_DRIVER=redis" >> .env
+          echo "SESSION_DRIVER=redis" >> .env
+          echo "QUEUE_CONNECTION=redis" >> .env
+          echo "REDIS_HOST=redis" >> .env
+          echo "REDIS_PORT=6379" >> .env
 
       # Paso 5: Generar clave de aplicación
       - name: Generate application key
@@ -73,7 +79,7 @@ jobs:
         run: |
           docker compose exec web php artisan test --testsuite=Feature
 
-      # Paso 12: Simular despliegue (si todas las pruebas pasan)
+      # Paso 12: Simular despliegue
       - name: Simulate Deployment
         if: ${{ success() }}
         run: |

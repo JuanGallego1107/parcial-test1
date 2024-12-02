@@ -50,4 +50,15 @@ class TaskController extends Controller
         }
         return response()->json(['message' => 'Task not found'], 404);
     }
+
+    public function checkTaskInRedis(int $taskId)
+    {
+        // Use the service to check if the task exists in Redis
+        $exists = $this->taskRepository->taskExistsInRedis($taskId);
+
+        return response()->json([
+            'taskId' => $taskId,
+            'existsInRedis' => $exists,
+        ]);
+    }
 }

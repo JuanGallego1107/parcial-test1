@@ -15,6 +15,9 @@ RUN a2enmod rewrite
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql zip
 
+# Install PHP Redis extension
+RUN pecl install redis && docker-php-ext-enable redis
+
 # Configure Apache DocumentRoot to point to Laravel's public directory
 # and update Apache configuration files
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public

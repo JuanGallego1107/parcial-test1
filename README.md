@@ -23,6 +23,9 @@ Para clonar el repositorio, ejecuta el siguiente comando en tu terminal:
 git clone https://github.com/tu-usuario/parcial_test1.git
 cd parcial_test1
 
+# Instalar dependencias con composer
+composer install
+
 # Copiar archivo de configuración de entorno
 cp .env.example .env
 

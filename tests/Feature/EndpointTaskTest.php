@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Task;
+use Illuminate\Support\Facades\Redis;
 
 class EndpointTaskTest extends TestCase
 {
@@ -12,6 +13,9 @@ class EndpointTaskTest extends TestCase
      */
     public function test_get_all_tasks()
     {
+
+        $this->withoutMiddleware();
+
         // Crear algunas tareas de prueba
         Task::factory()->count(3)->create();
 
@@ -48,6 +52,8 @@ class EndpointTaskTest extends TestCase
      */
     public function test_get_task_by_id()
     {
+        $this->withoutMiddleware();
+
         $task = Task::factory()->create();
 
         $response = $this->get("/tasks/{$task->id}");
@@ -63,6 +69,7 @@ class EndpointTaskTest extends TestCase
      */
     public function test_update_task()
     {
+        $this->withoutMiddleware();
 
         $this->withoutMiddleware();
 
@@ -91,6 +98,29 @@ class EndpointTaskTest extends TestCase
         $response->assertStatus(200)
                  ->assertJson([
                      'message' => 'Task deleted'
+                 ]);
+    }
+
+    public function test_check_task_exists_in_redis()
+    {
+        $this->withoutMiddleware();
+        
+        // Create a task in the database
+        $task = Task::factory()->create();
+
+        // Store the task in Redis
+        $redisKey = "task:{$task->id}";
+        Redis::set($redisKey, json_encode($task->toArray()));
+        Redis::expire($redisKey, 3600); // Optional: Set expiration
+
+        // Call the endpoint
+        $response = $this->get("/tasks/{$task->id}/exists-in-redis");
+
+        // Assert that the response is successful and the Redis check returns true
+        $response->assertStatus(200)
+                 ->assertJson([
+                     'taskId' => $task->id,
+                     'existsInRedis' => true,
                  ]);
     }
 }
