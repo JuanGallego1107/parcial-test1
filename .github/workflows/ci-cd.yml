@@ -55,9 +55,9 @@ jobs:
           docker compose up -d --build
 
       # Paso 7: Esperar que los servicios estén listos
-      - name: Wait for services to start
+      - name: Wait for services to start 
         run: |
-          docker compose exec db mysqladmin ping -h localhost --silent
+          docker compose exec db mysqladmin ping -h db --silent
           docker compose exec redis redis-cli ping
 
       # Paso 8: Ejecutar migraciones
