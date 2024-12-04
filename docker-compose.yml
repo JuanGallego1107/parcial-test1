@@ -1,6 +1,6 @@
 services:
   web:
-    image: app-name:latest
+    image: app-docker:latest
     build:
       target: web
       context: .
