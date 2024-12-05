@@ -12,6 +12,7 @@ class TaskRepository implements TaskRepositoryInterface
     {
         return Task::all();
     }
+    
 
     public function find($id)
     {
